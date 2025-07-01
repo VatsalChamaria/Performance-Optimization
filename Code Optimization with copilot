@@ -1,0 +1,14 @@
+Optimized Code
+
+// Retrieve all products related to the orders in a single query
+var productIds = orders.Select(o => o.ProductId).Distinct().ToList();
+var products = db.Products.Where(p => productIds.Contains(p.Id)).ToDictionary(p => p.Id);
+
+// Process orders using the pre-fetched product data
+foreach (var order in orders)
+{
+    if (products.TryGetValue(order.ProductId, out var product))
+    {
+        Console.WriteLine($"Order {order.Id}: {product.Name} - {order.Quantity}");
+    }
+}
