@@ -1,0 +1,29 @@
+public void ProcessOrder(Order order)
+{
+    try
+    {
+        var product = db.Products.Find(order.ProductId);
+        
+        // Null check for product
+        if (product == null)
+        {
+            throw new Exception($"Product with ID {order.ProductId} not found.");
+        }
+
+        // Validate stock availability
+        if (product.Stock < order.Quantity)
+        {
+            throw new Exception($"Insufficient stock for product {product.Name}. Available: {product.Stock}, Required: {order.Quantity}");
+        }
+
+        // Process order
+        product.Stock -= order.Quantity;
+        Console.WriteLine($"Order {order.Id} processed: {product.Name} - {order.Quantity}");
+    }
+    catch (Exception ex)
+    {
+        // Handle exceptions and log error
+        Console.WriteLine($"Error processing order {order.Id}: {ex.Message}");
+        // Optionally, log the error to a file or monitoring system
+    }
+}
